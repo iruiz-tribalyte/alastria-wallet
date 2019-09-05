@@ -1,10 +1,11 @@
 <ion-header>
-    <ion-row justify-content-center>
-        <img src="assets/images/logo/logo1.png" class="alastria-logo">
-    </ion-row>
+    <ion-navbar class="navbar-header">       
+        <ion-title style="color: white">Credenciales</ion-title>
+    </ion-navbar>   
     <ion-row text-center>
         <h2 class="description"> Listado de credenciales</h2>
     </ion-row>
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onSearch($event)"></ion-searchbar>
 </ion-header>
 <ion-content class="tutorial-page">
     <!-- <expandable-list isSelectable="true" (handleIdentitySelect)="handleIdentitySelect($event)"></identity-data-list> -->
@@ -13,7 +14,7 @@
             <button ion-button class="btnConfirm" style="width: 80%" (click)="manageCredentials()">ACEPTAR</button>
         </ion-row>
         <ion-row justify-content-center>
-            <div class="btnCancel" (click)="dismiss()">CANCELAR</div>
+            <div class="btnCancel" (click)="cancel()">CANCELAR</div>
         </ion-row>
     </ion-footer>
 </ion-content>
