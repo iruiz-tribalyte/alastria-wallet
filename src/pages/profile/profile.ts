@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
+import { DetailProfilePage } from './../../pages/detail-profile/detail-profile';
 
 @IonicPage()
 @Component({
@@ -8,7 +9,11 @@ import { IonicPage } from 'ionic-angular';
 })
 export class ProfilePage {
 
-    constructor() {
+    constructor(
+        public navCtrl: NavController) {
     }
 
+    handleMoreSelect(item: any) {
+        this.navCtrl.push(DetailProfilePage, { item });
+    }
 }
