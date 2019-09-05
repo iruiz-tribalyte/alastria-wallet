@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { ViewController, NavParams, ModalController } from 'ionic-angular';
+import { ViewController, NavParams, ModalController, NavController } from 'ionic-angular';
 import { ToastService } from '../../services/toast-service';
 import { IdentitySecuredStorageService } from '../../services/securedStorage.service';
 import { LoadingService } from '../../services/loading-service';
+import { DetailProfilePage } from './../../pages/detail-profile/detail-profile';
+import { SelectIdentity } from './select-identity/select-identity';
 
 
 @Component({
@@ -27,7 +29,8 @@ export class ConfirmAccess {
         public modalCtrl: ModalController,
         public toastCtrl: ToastService,
         private securedStrg: IdentitySecuredStorageService,
-        private loadingSrv: LoadingService
+        private loadingSrv: LoadingService,
+        public navCtrl: NavController
     ) {
         this.dataNumberAccess = this.navParams.get("dataNumberAccess");
         this.issName = this.navParams.get("issName");
@@ -131,5 +134,13 @@ export class ConfirmAccess {
 
     public showSucces() {
         this.loadingSrv.updateModalState();
+    }
+
+    public handleMoreSelect(item: any) {
+        if (this.isPresentationRequest) {
+            this.navCtrl.push(SelectIdentity, { item });
+        } else {
+            this.navCtrl.push(DetailProfilePage, { item });
+        }
     }
 }
