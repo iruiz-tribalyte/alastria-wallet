@@ -24,11 +24,10 @@ export interface mockCredential {
 })
 
 export class IdentityDataListComponent {
-    @Input()
-    public isSelectable = false;
+    @Input() public isSelectable = false;
 
-    @Output()
-    public handleIdentitySelect = new EventEmitter();
+    @Output() public handleIdentitySelect = new EventEmitter();
+    @Output() public handleMoreSelect = new EventEmitter();
 
     public identityData = new Array<mockCredential>();
     public isDataSetted =  false;
@@ -194,7 +193,7 @@ export class IdentityDataListComponent {
     }
 
     public detail(item: any): void {
-        this.navCtrl.push(DetailProfilePage, { item });
+        this.handleMoreSelect.emit(item);
     }
 
     public changeIdentitySelect(event: any, id: number): void {
