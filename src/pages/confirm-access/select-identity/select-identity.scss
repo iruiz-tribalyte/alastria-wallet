@@ -48,11 +48,13 @@ select-identity {
     margin-right: 15px;
   }
 
+  ion-header > div {
+    margin-left: 20px;
+  }
+
   .description {
-    color: $blueT;
     padding: 2%;
     font-weight: normal;
-
     &.bold {
       font-weight: bold;
     }
