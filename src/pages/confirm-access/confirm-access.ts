@@ -143,4 +143,12 @@ export class ConfirmAccess {
             this.navCtrl.push(DetailProfilePage, { item });
         }
     }
+
+    public handleSelectNewCredential(credential: any) {
+        console.log('Credential: ', credential);
+    }
+
+    public dismiss() {
+        this.viewCtrl.dismiss();
+    }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { ViewController, NavParams, ModalController, NavController } from 'ionic-angular';
 import { ToastService } from '../../../services/toast-service';
 import { IdentitySecuredStorageService } from '../../../services/securedStorage.service';
@@ -10,6 +10,8 @@ import { LoadingService } from '../../../services/loading-service';
     templateUrl: 'select-identity.html'
 })
 export class SelectIdentity {
+
+    @Output() handleSelectNewCredential = new EventEmitter();
 
     private readonly CREDENTIAL_PREFIX = "cred_";
     private readonly PRESENTATION_PREFIX = "present_";
@@ -41,6 +43,11 @@ export class SelectIdentity {
         console.log('searchTerm', this.searchTerm);
     }
     
+    accept() {
+        this.handleSelectNewCredential.emit(this.identitySelected);
+        this.navCtrl.pop();
+    }
+
     cancel() {
         this.navCtrl.pop();
     }
