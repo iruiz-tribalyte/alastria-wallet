@@ -25,6 +25,7 @@ export interface mockCredential {
 
 export class IdentityDataListComponent {
     @Input() public isSelectable = false;
+    @Input() public isExpandable: Boolean;
 
     @Output() public handleIdentitySelect = new EventEmitter();
     @Output() public handleMoreSelect = new EventEmitter();
@@ -39,88 +40,115 @@ export class IdentityDataListComponent {
         public navParams: NavParams,
         private securedStrg: IdentitySecuredStorageService
     ) {
-        let credentials = this.navParams.get("credentials");
-        let isPresentationRequest = this.navParams.get("isPresentationRequest");
-
-        let iat = new Date(this.navParams.get("iat") * 1000);
-        let exp = new Date(this.navParams.get("exp") * 1000);
-        let iatString = iat.getDay() + "/" + (iat.getMonth() + 1) + "/" + iat.getFullYear();
-        let expString = exp.getDay() + "/" + (exp.getMonth() + 1) + "/" + exp.getFullYear();
-        let count = 0;
-
-        let credentialPromises = credentials.map((credential) => {
-            let propNames = Object.getOwnPropertyNames(credential);
-
-            let level = credential.levelOfAssurance;
-
-            let stars = [{
-                "iconActive": "icon-star",
-                "iconInactive": "icon-star-outline",
-                "isActive": true
-            }, {
-                "iconActive": "icon-star",
-                "iconInactive": "icon-star-outline",
-                "isActive": true
-            }, {
-                "iconActive": "icon-star",
-                "iconInactive": "icon-star-outline",
-                "isActive": true
-            }];
-
-            for (let z = 0; z < stars.length; z++) {
-                stars[z].isActive = ((z + 1 <= level) ? true : false);
-            }
-
-            let obj: mockCredential;
-
-            if (isPresentationRequest) {
-                let securedCredentials;
-                let key = credential["field_name"];
-                 return this.securedStrg.get(this.CREDENTIAL_PREFIX + key)
-                    .then((result) => {
-                        console.log(result);
-                        securedCredentials = JSON.parse(result);
-                        obj = {
-                            id: count++,
-                            titleP: credential[propNames[2].toString()],
-                            emitter: "Emisor del testimonio",
-                            valueT: "Valor",
-                            value: securedCredentials[key],
-                            place: "Emisor de credencial",
-                            addDateT: "Fecha incorporación del testimonio",
-                            addDate: iatString,
-                            endDateT: "Fecha fin de vigencia",
-                            endDate: expString,
-                            level: "Nivel " + level,
-                            iconsStars: stars
-                        };
-                        this.identityData.push(obj);
-                        return Promise.resolve();
+        console.log('isExpandable ', this.isExpandable)
+        console.log('isSelectable ', this.isSelectable)
+        if (this.isExpandable) {
+            this.securedStrg.getAllCredentials()
+                .then((credentials: any) =>{
+                    credentials.forEach((credential: any, index: number) => {
+                        this.identityData.push(credential)
                     });
-            } else {
-                obj = {
-                    id: count++,
-                    titleP: propNames[2].toUpperCase(),
-                    emitter: "Emisor del testimonio",
-                    valueT: "Valor",
-                    value: credential[propNames[2].toString()],
-                    place: "Emisor de credencial",
-                    addDateT: "Fecha incorporación del testimonio",
-                    addDate: iatString,
-                    endDateT: "Fecha fin de vigencia",
-                    endDate: expString,
-                    level: "Nivel " + level,
-                    iconsStars: stars
-                };
-                this.identityData.push(obj);
-                return Promise.resolve();
-            }
-        });
+                })
+            console.log('this.identityData ', this.identityData);
+        } else {
 
-        Promise.all(credentialPromises)
-        .then(() => {
-            this.isDataSetted = true;
-        })
+            let credentials = this.navParams.get("credentials");
+            let iat = new Date(this.navParams.get("iat") * 1000);
+            let exp = new Date(this.navParams.get("exp") * 1000);
+            let iatString = iat.getDay() + "/" + (iat.getMonth() + 1) + "/" + iat.getFullYear();
+            let expString = exp.getDay() + "/" + (exp.getMonth() + 1) + "/" + exp.getFullYear();
+            console.log('CREDENTIALS ', credentials);
+            let isPresentationRequest = this.navParams.get("isPresentationRequest");
+
+            let count = 0;
+
+            let credentialPromises = credentials.map((credential) => {
+                let propNames = Object.getOwnPropertyNames(credential);
+
+                let level = credential.levelOfAssurance;
+
+                let stars = [{
+                    "iconActive": "icon-star",
+                    "iconInactive": "icon-star-outline",
+                    "isActive": true
+                }, {
+                    "iconActive": "icon-star",
+                    "iconInactive": "icon-star-outline",
+                    "isActive": true
+                }, {
+                    "iconActive": "icon-star",
+                    "iconInactive": "icon-star-outline",
+                    "isActive": true
+                }];
+
+                for (let z = 0; z < stars.length; z++) {
+                    stars[z].isActive = ((z + 1 <= level) ? true : false);
+                }
+
+                let obj: mockCredential;
+
+                if (isPresentationRequest) {
+                    let securedCredentials;
+                    let key = credential["field_name"];
+                    return this.securedStrg.get(this.CREDENTIAL_PREFIX + key)
+                        .then((result) => {
+                            console.log(result);
+                            securedCredentials = JSON.parse(result);
+                            obj = {
+                                id: count++,
+                                titleP: credential[propNames[2].toString()],
+                                emitter: "Emisor del testimonio",
+                                valueT: "Valor",
+                                value: securedCredentials[key],
+                                place: "Emisor de credencial",
+                                addDateT: "Fecha incorporación del testimonio",
+                                addDate: iatString,
+                                endDateT: "Fecha fin de vigencia",
+                                endDate: expString,
+                                level: "Nivel " + level,
+                                iconsStars: stars
+                            };
+                            this.identityData.push(obj);
+                            return Promise.resolve();
+                        });
+                } else {
+                    obj = {
+                        id: count++,
+                        titleP: propNames[2].toUpperCase(),
+                        emitter: "Emisor del testimonio",
+                        valueT: "Valor",
+                        value: credential[propNames[2].toString()],
+                        place: "Emisor de credencial",
+                        addDateT: "Fecha incorporación del testimonio",
+                        addDate: iatString,
+                        endDateT: "Fecha fin de vigencia",
+                        endDate: expString,
+                        level: "Nivel " + level,
+                        iconsStars: stars
+                    };
+                    this.identityData.push(obj);
+                    return Promise.resolve();
+                }
+            });
+            // this.identityData = [{
+            //     id: 1,
+            //     titleP: "Carnet de Estudiante",
+            //     emitter: "Emisor de creedencial",
+            //     place: "Barcelona",
+            //     valueT: "PruebaT",
+            //     value: "Prueba",
+            //     addDateT: "07/07/2019",
+            //     addDate: "07/07/2019",
+            //     endDateT: "07/07/2019",
+            //     endDate: "07/07/2019",
+            //     level: "Nivel 1",
+            //     iconsStars: [{isActive: true},{isActive: true},{isActive: true}]
+            // }]
+            Promise.all(credentialPromises)
+            .then(() => {
+                this.isDataSetted = true;
+            })
+        }
 
         /* for (let i = 0; i < credentials.length; i++) {
             let propNames = Object.getOwnPropertyNames(credentials[i]);
@@ -203,6 +231,48 @@ export class IdentityDataListComponent {
         }
 
         this.handleIdentitySelect.emit(result);
+    }
+
+    public expandableItem(item: any) {
+        console.log('expandableItem ', item)
+    }
+
+    parseCredential(credential: any, index: number) {
+        let iat = new Date(this.navParams.get("iat") * 1000);
+        let exp = new Date(this.navParams.get("exp") * 1000);
+        let iatString = iat.getDay() + "/" + (iat.getMonth() + 1) + "/" + iat.getFullYear();
+        let expString = exp.getDay() + "/" + (exp.getMonth() + 1) + "/" + exp.getFullYear();
+        let key = credential["field_name"];
+        let propNames = Object.getOwnPropertyNames(credential);
+        const securedCredentials = JSON.parse(credential);
+        let level = credential.levelOfAssurance;
+        let stars = [{
+            "iconActive": "icon-star",
+            "iconInactive": "icon-star-outline",
+            "isActive": true
+        }, {
+            "iconActive": "icon-star",
+            "iconInactive": "icon-star-outline",
+            "isActive": true
+        }, {
+            "iconActive": "icon-star",
+            "iconInactive": "icon-star-outline",
+            "isActive": true
+        }];
+        return {
+            id: index++,
+            titleP: credential[propNames[2].toString()],
+            emitter: "Emisor del testimonio",
+            valueT: "Valor",
+            value: securedCredentials[key],
+            place: "Emisor de credencial",
+            addDateT: "Fecha incorporación del testimonio",
+            addDate: iatString,
+            endDateT: "Fecha fin de vigencia",
+            endDate: expString,
+            level: "Nivel " + level,
+            iconsStars: stars
+        };
     }
 
 }

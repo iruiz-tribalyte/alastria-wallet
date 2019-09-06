@@ -6,6 +6,7 @@
                 <ion-checkbox *ngIf="isSelectable" class="checkbox-item" (ionChange)="changeIdentitySelect($event, item.id)"></ion-checkbox>
                 <strong style="font-size: 15px"> {{ item.titleP }} </strong> 
                 <span style="font-size: 13px"> - {{ item.place }} </span>
+                <ion-icon *ngIf="isExpandable" name="arrow-down" (click)="expandableItem(item)"></ion-icon>
             </ion-card-title>
             <p [class.description-position]="isSelectable">
                 {{ item.value }}
@@ -20,7 +21,7 @@
             <!-- Reviews Star -->
             <div  style="margin-top: 5px;"><span span-small > {{ item.level }}, {{ item.endDate }}</span></div>
             
-            <div float-right>
+            <div float-right *ngIf="!isExpandable">
                 <img src="assets/images/alastria/more.png" (click)="detail(item)"/>
             </div>
         </ion-card-content>

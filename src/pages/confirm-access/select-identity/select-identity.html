@@ -10,7 +10,7 @@
     </div>
 </ion-header>
 <ion-content class="tutorial-page">
-    <!-- <expandable-list isSelectable="true" (handleIdentitySelect)="handleIdentitySelect($event)"></identity-data-list> -->
+    <identity-data-list isSelectable="true" [isExpandable]="isExpandable"></identity-data-list>
     <ion-footer>
         <ion-row justify-content-center>
             <button ion-button class="btnConfirm" style="width: 80%" (click)="accept()">ACEPTAR</button>
